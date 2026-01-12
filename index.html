@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Pronunciation - 영어 노래 발음 연습</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Song Pronunciation</h1>
+            <p class="subtitle">영어 노래로 쉽게 발음 배우기</p>
+        </header>
+
+        <main>
+            <div class="search-section">
+                <div class="search-box-container">
+                    <div class="input-group">
+                        <label for="artistInput">아티스트</label>
+                        <input
+                            type="text"
+                            id="artistInput"
+                            placeholder="예: Coldplay"
+                            autocomplete="off"
+                        >
+                    </div>
+                    <div class="input-group">
+                        <label for="titleInput">노래 제목</label>
+                        <input
+                            type="text"
+                            id="titleInput"
+                            placeholder="예: Viva La Vida"
+                            autocomplete="off"
+                        >
+                    </div>
+                    <button id="searchBtn" class="search-btn">검색</button>
+                </div>
+
+                <div id="loadingIndicator" class="loading hidden">검색 중...</div>
+                <div id="errorMessage" class="error-message hidden"></div>
+            </div>
+
+            <div id="resultsSection" class="results-section hidden">
+                <h2>검색 결과</h2>
+                <div id="resultsList" class="results-list"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Powered by Lyrics.ovh API</p>
+        </footer>
+    </div>
+
+    <script src="js/search.js"></script>
+</body>
+</html>
