@@ -53,3 +53,9 @@ python/transliteration/data/
 
 # Test files (optional)
 test.html
+
+# Environment variables
+.env
+
+# Pytest
+.pytest_cache/
