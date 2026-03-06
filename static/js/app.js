@@ -101,8 +101,8 @@ async function search(artist, title) {
 
     // Step 3: render results
     hideStatus();
-    songTitleEl.textContent = title;
-    songArtistEl.textContent = artist;
+    songTitleEl.textContent = title || artist;
+    songArtistEl.textContent = title ? artist : '';
     renderLyrics(lines);
     resultsEl.classList.remove('hidden');
     resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -113,5 +113,9 @@ searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const artist = artistInput.value.trim();
     const title = titleInput.value.trim();
-    if (artist && title) search(artist, title);
+    if (!artist && !title) {
+        showStatus('아티스트 또는 곡명을 입력해주세요.', 'error');
+        return;
+    }
+    search(artist, title);
 });

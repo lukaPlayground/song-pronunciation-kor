@@ -43,11 +43,25 @@ def search_genius(artist: str, title: str) -> Optional[str]:
         return None
 
 
+def search_lyricsovh(artist: str, title: str) -> Optional[str]:
+    """Search Lyrics.ovh for lyrics (3rd fallback). Returns None if not found."""
+    try:
+        url = f'https://api.lyrics.ovh/v1/{artist}/{title}'
+        response = requests.get(url, timeout=10)
+        if response.status_code != 200:
+            return None
+        data = response.json()
+        return data.get('lyrics') or None
+    except Exception:
+        return None
+
+
 def search_lyrics(artist: str, title: str) -> Tuple[Optional[str], str]:
-    """Search with lrclib first, Genius fallback.
+    """Search with lrclib first, Genius second, Lyrics.ovh third fallback.
 
     Returns:
-        (lyrics_text, source) where source is 'lrclib' | 'genius' | 'none'
+        (lyrics_text, source) where source is
+        'lrclib' | 'genius' | 'lyricsovh' | 'none'
     """
     lyrics = search_lrclib(artist, title)
     if lyrics:
@@ -56,5 +70,9 @@ def search_lyrics(artist: str, title: str) -> Tuple[Optional[str], str]:
     lyrics = search_genius(artist, title)
     if lyrics:
         return lyrics, 'genius'
+
+    lyrics = search_lyricsovh(artist, title)
+    if lyrics:
+        return lyrics, 'lyricsovh'
 
     return None, 'none'

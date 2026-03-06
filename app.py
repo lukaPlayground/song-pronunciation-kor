@@ -7,43 +7,43 @@ from pronunciation import lyrics_to_korean
 
 load_dotenv()
 
-app = Flask(__name__, static_folder='static', static_url_path='/static')
+app = Flask(__name__, static_folder="static", static_url_path="/static")
 CORS(app)
 
 
-@app.route('/')
+@app.route("/")
 def index():
-    return send_from_directory('static', 'index.html')
+    return send_from_directory("static", "index.html")
 
 
-@app.route('/api/lyrics', methods=['POST'])
+@app.route("/api/lyrics", methods=["POST"])
 def get_lyrics():
     data = request.get_json() or {}
-    artist = data.get('artist', '').strip()
-    title = data.get('title', '').strip()
+    artist = data.get("artist", "").strip()
+    title = data.get("title", "").strip()
 
-    if not artist or not title:
-        return jsonify({'error': 'artist and title are required'}), 400
+    if not artist and not title:
+        return jsonify({"error": "artist or title is required"}), 400
 
     lyrics, source = search_lyrics(artist, title)
 
     if not lyrics:
-        return jsonify({'error': 'Lyrics not found'}), 404
+        return jsonify({"error": "Lyrics not found"}), 404
 
-    return jsonify({'lyrics': lyrics, 'source': source})
+    return jsonify({"lyrics": lyrics, "source": source})
 
 
-@app.route('/api/pronunciation', methods=['POST'])
+@app.route("/api/pronunciation", methods=["POST"])
 def get_pronunciation():
     data = request.get_json() or {}
-    lyrics = data.get('lyrics', '').strip()
+    lyrics = data.get("lyrics", "").strip()
 
     if not lyrics:
-        return jsonify({'error': 'lyrics is required'}), 400
+        return jsonify({"error": "lyrics is required"}), 400
 
     lines = lyrics_to_korean(lyrics)
-    return jsonify({'lines': lines})
+    return jsonify({"lines": lines})
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(port=5001, debug=True)
