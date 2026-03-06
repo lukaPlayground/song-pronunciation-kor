@@ -56,3 +56,8 @@ def test_lyrics_to_korean_structure():
     assert result[1]['original'] == ''
     assert result[1]['pronunciation'] == ''
     assert result[2]['original'] == 'goodbye'
+
+
+def test_word_to_korean_with_trailing_punctuation():
+    # "hello," should produce same result as "hello"
+    assert word_to_korean("hello,") == word_to_korean("hello")
