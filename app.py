@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 from lyrics import search_lyrics
 from pronunciation import lyrics_to_korean
+from search import search_candidates
 
 load_dotenv()
 
@@ -43,6 +44,19 @@ def get_pronunciation():
 
     lines = lyrics_to_korean(lyrics)
     return jsonify({"lines": lines})
+
+
+@app.route('/api/search', methods=['POST'])
+def get_search_candidates():
+    data = request.get_json() or {}
+    artist = data.get('artist', '').strip()
+    title = data.get('title', '').strip()
+
+    if not artist and not title:
+        return jsonify({'error': 'artist or title is required'}), 400
+
+    results = search_candidates(artist, title)
+    return jsonify({'results': results})
 
 
 if __name__ == "__main__":
