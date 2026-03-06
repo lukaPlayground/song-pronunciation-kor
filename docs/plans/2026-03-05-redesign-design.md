@@ -97,7 +97,7 @@ ARPABET_TO_KOR = {
 
 `.env`:
 ```
-GENIUS_ACCESS_TOKEN=_faMiQlPOTZj_...
+GENIUS_ACCESS_TOKEN=<GENIUS_ACCESS_TOKEN>
 ```
 
 `.gitignore`에 `.env` 추가.
