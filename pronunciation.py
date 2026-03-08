@@ -51,6 +51,9 @@ DIPHTHONG_TRAIL = {
 # 받침으로 허용되는 자모
 CODA_SET = {'ㄴ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㄱ', 'ㅇ', 'ㅅ'}
 
+# 단어 끝(after=None)에서 버퍼 음절로 처리할 자모 (stops)
+STOP_JAMO = {'ㅂ', 'ㄱ', 'ㅅ'}
+
 # W/Y + 모음 → 복합 모음 (예: Y+AH → ㅕ)
 GLIDE_COMBO = {
     ('Y', 'AH'): 'ㅕ', ('Y', 'UW'): 'ㅠ', ('Y', 'AO'): 'ㅛ',
@@ -82,6 +85,9 @@ def _find_coda(phones: list, idx: int):
     if after is None or after in CONSONANTS:
         jamo = CONS_JAMO[p]
         if jamo in CODA_SET:
+            # stops(ㅂ,ㄱ,ㅅ)는 단어 끝(after=None)에서 버퍼 음절로 처리
+            if jamo in STOP_JAMO and after is None:
+                return '', False
             return jamo, True
     return '', False
 
@@ -163,33 +169,25 @@ def syllabify(phonemes: list) -> list:
     return result
 
 
-ARPABET_TO_KOR = {
-    # Vowels (stress digits 0,1,2 stripped before lookup)
-    'AA': '아', 'AE': '애', 'AH': '어', 'AO': '오',
-    'AW': '아우', 'AY': '아이', 'EH': '에', 'ER': '어',
-    'EY': '에이', 'IH': '이', 'IY': '이', 'OW': '오',
-    'OY': '오이', 'UH': '우', 'UW': '우',
-    # Consonants
-    'B': '브', 'CH': '치', 'D': '드', 'DH': '드',
-    'F': '프', 'G': '그', 'HH': '흐', 'JH': '즈',
-    'K': '크', 'L': '르', 'M': '므', 'N': '느',
-    'NG': '잉', 'P': '프', 'R': '르', 'S': '스',
-    'SH': '쉬', 'T': '트', 'TH': '쓰', 'V': '브',
-    'W': '우', 'Y': '이', 'Z': '즈', 'ZH': '즈',
-}
-
-
 def phonemes_to_korean(phonemes: list) -> str:
-    """Convert ARPAbet phoneme list to Korean string."""
+    """Convert ARPAbet phoneme list to Korean string using syllabification."""
+    # 단어 경계(' ')로 분리해 각 단어 음절화 후 합침
+    words_phones = []
+    current = []
+    for p in phonemes:
+        if p == ' ':
+            if current:
+                words_phones.append(current)
+                current = []
+        else:
+            current.append(p)
+    if current:
+        words_phones.append(current)
+
     parts = []
-    for phone in phonemes:
-        if phone == ' ':
-            parts.append(' ')
-            continue
-        stripped = phone.rstrip('012')  # strip stress digit
-        if stripped in ARPABET_TO_KOR:
-            parts.append(ARPABET_TO_KOR[stripped])
-    return ''.join(parts)
+    for wp in words_phones:
+        parts.append(''.join(syllabify(wp)))
+    return ' '.join(parts)
 
 
 def word_to_korean(word: str) -> str:

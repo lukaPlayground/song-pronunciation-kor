@@ -3,8 +3,8 @@ from pronunciation import phonemes_to_korean, word_to_korean, line_to_korean, ly
 
 
 def test_phonemes_to_korean_vowels():
-    # AA→아, AH0→어 (stress digit stripped), OW1→오
-    assert phonemes_to_korean(['AA', 'AH0', 'OW1']) == '아어오'
+    # AA→아, AH0→어 (stress digit stripped), OW1→오우 (OW는 이중모음)
+    assert phonemes_to_korean(['AA', 'AH0', 'OW1']) == '아어오우'
 
 
 def test_phonemes_to_korean_consonants():
@@ -12,7 +12,8 @@ def test_phonemes_to_korean_consonants():
 
 
 def test_phonemes_to_korean_space():
-    assert phonemes_to_korean([' ']) == ' '
+    # 공백만 있으면 빈 문자열 반환 (단어 없음)
+    assert phonemes_to_korean([' ']) == ''
 
 
 def test_phonemes_to_korean_empty():
@@ -158,3 +159,33 @@ def test_syllabify_ng_coda():
 def test_syllabify_no_onset():
     # AH alone → 어
     assert syllabify(['AH0']) == ['어']
+
+
+def test_word_danger():
+    result = word_to_korean("danger")
+    # 데인져 또는 데인저 (JH+ER 처리에 따라)
+    assert result in ("데인져", "데인저")
+
+def test_word_love():
+    assert word_to_korean("love") == "러브"
+
+def test_word_with():
+    assert word_to_korean("with") == "위드"
+
+def test_word_ring():
+    assert word_to_korean("ring") == "링"
+
+def test_word_room():
+    assert word_to_korean("room") == "룸"
+
+def test_word_feel():
+    assert word_to_korean("feel") == "필"
+
+def test_word_ten():
+    assert word_to_korean("ten") == "텐"
+
+def test_word_baby():
+    assert word_to_korean("baby") == "베이비"
+
+def test_word_night():
+    assert word_to_korean("night") == "나이트"
