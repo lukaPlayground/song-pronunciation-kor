@@ -88,3 +88,41 @@ def test_jung_table_contains_compound():
     assert 'ㅕ' in JUNG
     assert 'ㅠ' in JUNG
     assert 'ㅛ' in JUNG
+
+
+from pronunciation import VOWEL_JAMO, CONS_JAMO, DIPHTHONG_TRAIL, CODA_SET
+
+def test_vowel_jamo_basic():
+    assert VOWEL_JAMO['AH'] == 'ㅓ'
+    assert VOWEL_JAMO['IY'] == 'ㅣ'
+    assert VOWEL_JAMO['UW'] == 'ㅜ'
+    assert VOWEL_JAMO['AO'] == 'ㅗ'
+
+def test_vowel_jamo_diphthong_main():
+    # 이중모음의 메인 모음
+    assert VOWEL_JAMO['EY'] == 'ㅔ'
+    assert VOWEL_JAMO['AY'] == 'ㅏ'
+    assert VOWEL_JAMO['OW'] == 'ㅗ'
+
+def test_cons_jamo_basic():
+    assert CONS_JAMO['D'] == 'ㄷ'
+    assert CONS_JAMO['N'] == 'ㄴ'
+    assert CONS_JAMO['L'] == 'ㄹ'
+    assert CONS_JAMO['M'] == 'ㅁ'
+    assert CONS_JAMO['JH'] == 'ㅈ'
+    assert CONS_JAMO['V'] == 'ㅂ'
+
+def test_diphthong_trail():
+    assert DIPHTHONG_TRAIL['EY'] == 'ㅣ'
+    assert DIPHTHONG_TRAIL['AY'] == 'ㅣ'
+    assert DIPHTHONG_TRAIL['AW'] == 'ㅜ'
+    assert DIPHTHONG_TRAIL['OW'] == 'ㅜ'
+    assert DIPHTHONG_TRAIL['OY'] == 'ㅣ'
+
+def test_coda_set_contains_sonorants():
+    assert 'ㄴ' in CODA_SET
+    assert 'ㄹ' in CODA_SET
+    assert 'ㅁ' in CODA_SET
+    assert 'ㅇ' in CODA_SET
+    assert 'ㅂ' in CODA_SET
+    assert 'ㄱ' in CODA_SET

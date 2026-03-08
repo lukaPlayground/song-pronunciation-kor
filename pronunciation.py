@@ -24,6 +24,47 @@ def compose_hangul(cho: str, jung: str, jong: str = '') -> str:
     return chr(0xAC00 + c * 21 * 28 + v * 28 + j)
 
 
+# ── ARPAbet → 자모 매핑 ─────────────────────────────────────
+VOWEL_JAMO = {
+    'AA': 'ㅏ', 'AE': 'ㅐ', 'AH': 'ㅓ', 'AO': 'ㅗ',
+    'EH': 'ㅔ', 'ER': 'ㅓ', 'IH': 'ㅣ', 'IY': 'ㅣ',
+    'UH': 'ㅓ', 'UW': 'ㅜ',
+    # 이중모음 — 메인 모음만 (trailing은 DIPHTHONG_TRAIL)
+    'EY': 'ㅔ', 'AY': 'ㅏ', 'AW': 'ㅏ', 'OW': 'ㅗ', 'OY': 'ㅗ',
+}
+
+CONS_JAMO = {
+    'B': 'ㅂ', 'CH': 'ㅊ', 'D': 'ㄷ', 'DH': 'ㄷ',
+    'F': 'ㅍ', 'G': 'ㄱ', 'HH': 'ㅎ', 'JH': 'ㅈ',
+    'K': 'ㄱ', 'L': 'ㄹ', 'M': 'ㅁ', 'N': 'ㄴ',
+    'NG': 'ㅇ', 'P': 'ㅍ', 'R': 'ㄹ', 'S': 'ㅅ',
+    'SH': 'ㅅ', 'T': 'ㅌ', 'TH': 'ㅅ', 'V': 'ㅂ',
+    'W': 'ㅜ', 'Y': 'ㅣ', 'Z': 'ㅈ', 'ZH': 'ㅈ',
+}
+
+# 이중모음 trailing glide (EY → 에이에서 ㅣ 부분)
+DIPHTHONG_TRAIL = {
+    'EY': 'ㅣ', 'AY': 'ㅣ', 'OY': 'ㅣ',
+    'AW': 'ㅜ', 'OW': 'ㅜ',
+}
+
+# 받침으로 허용되는 자모
+CODA_SET = {'ㄴ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㄱ', 'ㅇ', 'ㅅ'}
+
+# W/Y + 모음 → 복합 모음 (예: Y+AH → ㅕ)
+GLIDE_COMBO = {
+    ('Y', 'AH'): 'ㅕ', ('Y', 'UW'): 'ㅠ', ('Y', 'AO'): 'ㅛ',
+    ('Y', 'AE'): 'ㅖ', ('Y', 'EH'): 'ㅖ', ('Y', 'UH'): 'ㅕ',
+    ('W', 'AH'): 'ㅘ', ('W', 'AO'): 'ㅗ', ('W', 'IH'): 'ㅜ',
+    ('W', 'IY'): 'ㅜ', ('W', 'UH'): 'ㅜ', ('W', 'UW'): 'ㅜ',
+    ('W', 'EH'): 'ㅞ', ('W', 'ER'): 'ㅝ',
+}
+
+VOWELS = set(VOWEL_JAMO.keys())
+CONSONANTS = set(CONS_JAMO.keys())
+GLIDES = {'W', 'Y'}
+
+
 ARPABET_TO_KOR = {
     # Vowels (stress digits 0,1,2 stripped before lookup)
     'AA': '아', 'AE': '애', 'AH': '어', 'AO': '오',
