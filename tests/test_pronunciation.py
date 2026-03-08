@@ -126,3 +126,35 @@ def test_coda_set_contains_sonorants():
     assert 'ㅇ' in CODA_SET
     assert 'ㅂ' in CODA_SET
     assert 'ㄱ' in CODA_SET
+
+
+from pronunciation import syllabify
+
+def test_syllabify_simple_cv():
+    # L + AH = 러
+    assert syllabify(['L', 'AH0']) == ['러']
+
+def test_syllabify_cvc_with_sonorant_coda():
+    # T + EH + N = 텐 (N → 받침)
+    assert syllabify(['T', 'EH1', 'N']) == ['텐']
+
+def test_syllabify_consonant_cluster_buffer():
+    # N + IH + T → N 앞에 자음 없으므로 으 버퍼: 니+트
+    assert syllabify(['N', 'IH1', 'T']) == ['니', '트']
+
+def test_syllabify_diphthong_with_coda():
+    # D + EY + N → 데 + 인 (EY trailing ㅣ + N받침)
+    assert syllabify(['D', 'EY1', 'N']) == ['데', '인']
+
+def test_syllabify_glide_combo():
+    # W + IH + DH → 위 + 드 (W+IH→ㅜ, DH→ㄷ으 버퍼)
+    result = syllabify(['W', 'IH1', 'DH'])
+    assert result == ['위', '드']
+
+def test_syllabify_ng_coda():
+    # R + IH + NG → 링 (NG → 받침 ㅇ)
+    assert syllabify(['R', 'IH1', 'NG']) == ['링']
+
+def test_syllabify_no_onset():
+    # AH alone → 어
+    assert syllabify(['AH0']) == ['어']
