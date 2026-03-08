@@ -4,6 +4,26 @@ from g2p_en import G2p
 # G2p instance created once at module load (expensive to create repeatedly)
 g2p = G2p()
 
+# ── 한글 자모 테이블 ────────────────────────────────────────
+CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ',
+       'ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ']
+
+JUNG = ['ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ',
+        'ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ']
+
+JONG = ['','ㄱ','ㄲ','ㄳ','ㄴ','ㄵ','ㄶ','ㄷ','ㄹ','ㄺ','ㄻ',
+        'ㄼ','ㄽ','ㄾ','ㄿ','ㅀ','ㅁ','ㅂ','ㅄ','ㅅ','ㅆ',
+        'ㅇ','ㅈ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ']
+
+
+def compose_hangul(cho: str, jung: str, jong: str = '') -> str:
+    """초성 + 중성 + 종성(선택) → 완성형 한글 음절"""
+    c = CHO.index(cho)
+    v = JUNG.index(jung)
+    j = JONG.index(jong) if jong else 0
+    return chr(0xAC00 + c * 21 * 28 + v * 28 + j)
+
+
 ARPABET_TO_KOR = {
     # Vowels (stress digits 0,1,2 stripped before lookup)
     'AA': '아', 'AE': '애', 'AH': '어', 'AO': '오',
