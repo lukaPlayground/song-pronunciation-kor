@@ -1,9 +1,7 @@
 // DOM references
 var searchForm = document.getElementById('searchForm');
-var artistInput = document.getElementById('artistInput');
-var titleInput = document.getElementById('titleInput');
-var artistAutocomplete = document.getElementById('artistAutocomplete');
-var titleAutocomplete = document.getElementById('titleAutocomplete');
+var searchInput = document.getElementById('searchInput');
+var searchAutocomplete = document.getElementById('searchAutocomplete');
 var candidatePanel = document.getElementById('candidatePanel');
 var candidateList = document.getElementById('candidateList');
 var statusEl = document.getElementById('status');
@@ -73,8 +71,6 @@ function renderCandidatePanel(candidates) {
         li.appendChild(artistSpan);
         li.addEventListener('click', function () {
             candidatePanel.classList.add('hidden');
-            artistInput.value = item.artist;
-            titleInput.value = item.title;
             searchLyrics(item.artist, item.title);
         });
         candidateList.appendChild(li);
@@ -142,29 +138,10 @@ async function searchLyrics(artist, title) {
 
 // Autocomplete setup
 setupAutocomplete({
-    inputEl: artistInput,
-    listEl: artistAutocomplete,
-    getArtist: function () { return artistInput.value.trim(); },
-    getTitle: function () { return titleInput.value.trim(); },
+    inputEl: searchInput,
+    listEl: searchAutocomplete,
     onSelect: function (artist, title) {
-        artistInput.value = artist;
-        titleInput.value = title;
-        artistAutocomplete.classList.add('hidden');
-        titleAutocomplete.classList.add('hidden');
-        searchLyrics(artist, title);
-    }
-});
-
-setupAutocomplete({
-    inputEl: titleInput,
-    listEl: titleAutocomplete,
-    getArtist: function () { return artistInput.value.trim(); },
-    getTitle: function () { return titleInput.value.trim(); },
-    onSelect: function (artist, title) {
-        artistInput.value = artist;
-        titleInput.value = title;
-        artistAutocomplete.classList.add('hidden');
-        titleAutocomplete.classList.add('hidden');
+        searchAutocomplete.classList.add('hidden');
         searchLyrics(artist, title);
     }
 });
@@ -172,29 +149,27 @@ setupAutocomplete({
 // Form submit: always show candidate list first
 searchForm.addEventListener('submit', async function (e) {
     e.preventDefault();
-    var artist = artistInput.value.trim();
-    var title = titleInput.value.trim();
+    var query = searchInput.value.trim();
 
-    if (!artist && !title) {
+    if (!query) {
         showStatus('아티스트 또는 곡명을 입력해주세요.', 'error');
         return;
     }
 
     // Reuse autocomplete cache if same query
     var cache = getAutocompleteCache();
-    var cacheKey = artist + '||' + title;
     var candidates;
 
-    if (cache.key === cacheKey && cache.results.length > 0) {
+    if (cache.key === query && cache.results.length > 0) {
         candidates = cache.results;
     } else {
         showStatus('검색 중...', 'loading');
-        candidates = await apiFetchCandidates(artist, title);
+        candidates = await apiFetchCandidates(query);
         hideStatus();
     }
 
     if (!candidates.length) {
-        showStatus('검색 결과가 없습니다. 아티스트명 또는 제목을 확인해주세요.', 'error');
+        showStatus('검색 결과가 없습니다. 다른 검색어를 입력해주세요.', 'error');
         return;
     }
 

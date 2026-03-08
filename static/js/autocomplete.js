@@ -1,18 +1,17 @@
 // Shared cache: last /api/search result
 var _acCache = { key: null, results: [] };
 
-async function apiFetchCandidates(artist, title) {
-    var key = artist + '||' + title;
-    if (_acCache.key === key) return _acCache.results;
+async function apiFetchCandidates(query) {
+    if (_acCache.key === query) return _acCache.results;
     try {
         var resp = await fetch('/api/search', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ artist: artist, title: title })
+            body: JSON.stringify({ query: query })
         });
-        if (!resp.ok) { _acCache = { key: key, results: [] }; return []; }
+        if (!resp.ok) { _acCache = { key: query, results: [] }; return []; }
         var data = await resp.json();
-        _acCache = { key: key, results: data.results || [] };
+        _acCache = { key: query, results: data.results || [] };
         return _acCache.results;
     } catch (e) {
         return [];
@@ -22,21 +21,18 @@ async function apiFetchCandidates(artist, title) {
 function getAutocompleteCache() { return _acCache; }
 
 function setupAutocomplete(config) {
-    // config: { inputEl, listEl, getArtist, getTitle, onSelect }
+    // config: { inputEl, listEl, onSelect }
     var timer = null;
 
     config.inputEl.addEventListener('input', function () {
         clearTimeout(timer);
         var val = config.inputEl.value.trim();
-        if (val.length < 3) {
+        if (val.length < 2) {
             config.listEl.classList.add('hidden');
             return;
         }
         timer = setTimeout(async function () {
-            var candidates = await apiFetchCandidates(
-                config.getArtist(),
-                config.getTitle()
-            );
+            var candidates = await apiFetchCandidates(val);
             renderAutocompleteItems(config.listEl, candidates, config.onSelect);
         }, 300);
     });

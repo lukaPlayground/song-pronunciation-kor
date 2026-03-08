@@ -78,7 +78,7 @@ def test_pronunciation_missing_lyrics(client):
 def test_search_returns_candidates(client):
     mock_results = [{'artist': 'Coldplay', 'title': 'Yellow'}]
     with patch('app.search_candidates', return_value=mock_results):
-        resp = client.post('/api/search', json={'artist': 'Coldplay', 'title': ''})
+        resp = client.post('/api/search', json={'query': 'Coldplay Yellow'})
     assert resp.status_code == 200
     data = resp.get_json()
     assert data['results'] == mock_results
@@ -86,23 +86,23 @@ def test_search_returns_candidates(client):
 
 def test_search_empty_results(client):
     with patch('app.search_candidates', return_value=[]):
-        resp = client.post('/api/search', json={'title': 'Unknown'})
+        resp = client.post('/api/search', json={'query': 'Unknown'})
     assert resp.status_code == 200
     assert resp.get_json()['results'] == []
 
 
-def test_search_missing_both(client):
+def test_search_missing_query(client):
     resp = client.post('/api/search', json={})
     assert resp.status_code == 400
 
 
-def test_search_artist_only(client):
+def test_search_with_artist_name(client):
     with patch('app.search_candidates', return_value=[]):
-        resp = client.post('/api/search', json={'artist': 'Coldplay'})
+        resp = client.post('/api/search', json={'query': 'Coldplay'})
     assert resp.status_code == 200
 
 
-def test_search_title_only(client):
+def test_search_with_song_title(client):
     with patch('app.search_candidates', return_value=[]):
-        resp = client.post('/api/search', json={'title': 'Yellow'})
+        resp = client.post('/api/search', json={'query': 'Yellow'})
     assert resp.status_code == 200

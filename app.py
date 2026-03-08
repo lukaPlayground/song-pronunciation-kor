@@ -49,13 +49,12 @@ def get_pronunciation():
 @app.route('/api/search', methods=['POST'])
 def get_search_candidates():
     data = request.get_json() or {}
-    artist = data.get('artist', '').strip()
-    title = data.get('title', '').strip()
+    query = data.get('query', '').strip()
 
-    if not artist and not title:
-        return jsonify({'error': 'artist or title is required'}), 400
+    if not query:
+        return jsonify({'error': 'query is required'}), 400
 
-    results = search_candidates(artist, title)
+    results = search_candidates(query)
     return jsonify({'results': results})
 
 
