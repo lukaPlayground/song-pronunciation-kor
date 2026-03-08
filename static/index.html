@@ -14,22 +14,33 @@
 
     <main class="main">
         <form id="searchForm" class="search-form">
-            <input
-                type="text"
-                id="artistInput"
-                class="input"
-                placeholder="아티스트 (선택)"
-                autocomplete="off"
-            >
-            <input
-                type="text"
-                id="titleInput"
-                class="input"
-                placeholder="노래 제목 (선택)"
-                autocomplete="off"
-            >
+            <div class="input-wrapper">
+                <input
+                    type="text"
+                    id="artistInput"
+                    class="input"
+                    placeholder="아티스트 (선택)"
+                    autocomplete="off"
+                >
+                <ul id="artistAutocomplete" class="autocomplete-list hidden"></ul>
+            </div>
+            <div class="input-wrapper">
+                <input
+                    type="text"
+                    id="titleInput"
+                    class="input"
+                    placeholder="노래 제목 (선택)"
+                    autocomplete="off"
+                >
+                <ul id="titleAutocomplete" class="autocomplete-list hidden"></ul>
+            </div>
             <button type="submit" class="btn-search">검색</button>
         </form>
+
+        <section id="candidatePanel" class="candidate-panel hidden">
+            <h3 class="candidate-heading">검색 결과를 선택해주세요</h3>
+            <ul id="candidateList" class="candidate-list"></ul>
+        </section>
 
         <div id="status" class="status hidden"></div>
 
@@ -42,6 +53,7 @@
         </section>
     </main>
 
+    <script src="/static/js/autocomplete.js"></script>
     <script src="/static/js/app.js"></script>
 </body>
 </html>
