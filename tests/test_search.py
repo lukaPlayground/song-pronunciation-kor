@@ -30,6 +30,20 @@ def test_search_candidates_deduplicates():
     assert len(result) == 1
 
 
+def test_search_candidates_deduplicates_ampersand():
+    """& vs and 차이만 있는 아티스트명은 중복으로 처리"""
+    mock_resp = MagicMock()
+    mock_resp.status_code = 200
+    mock_resp.json.return_value = [
+        {'artistName': 'King Gizzard and the Lizard Wizard', 'trackName': 'Danger $$'},
+        {'artistName': 'King Gizzard & The Lizard Wizard', 'trackName': 'Danger $$'},
+    ]
+    with patch('search.requests.get', return_value=mock_resp):
+        result = search_candidates('Danger')
+    assert len(result) == 1
+    assert result[0]['title'] == 'Danger $$'
+
+
 def test_search_candidates_max_10():
     mock_resp = MagicMock()
     mock_resp.status_code = 200

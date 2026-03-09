@@ -60,3 +60,7 @@ test.html
 # Pytest
 .pytest_cache/
 .claude/
+
+# Markdown (README.md 제외)
+*.md
+!README.md

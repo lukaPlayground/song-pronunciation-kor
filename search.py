@@ -1,5 +1,14 @@
+import re
 import requests
 from typing import List, Dict
+
+
+def _normalize_artist(name: str) -> str:
+    """Normalize artist name for dedup comparison only (not display)."""
+    name = name.lower()
+    name = re.sub(r'\s*&\s*', ' and ', name)
+    name = re.sub(r'\s+', ' ', name).strip()
+    return name
 
 
 def search_candidates(query: str) -> List[Dict[str, str]]:
@@ -19,7 +28,7 @@ def search_candidates(query: str) -> List[Dict[str, str]]:
             track_name = (item.get('trackName') or '').strip()
             if not artist_name or not track_name:
                 continue
-            key = f"{artist_name}|{track_name}".lower()
+            key = f"{_normalize_artist(artist_name)}|{track_name.lower()}"
             if key in seen:
                 continue
             seen.add(key)

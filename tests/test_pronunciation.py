@@ -189,3 +189,32 @@ def test_word_baby():
 
 def test_word_night():
     assert word_to_korean("night") == "나이트"
+
+
+# ── 한글 처리 ────────────────────────────────────────────────
+
+def test_word_to_korean_korean_word():
+    assert word_to_korean("사랑해") == "사랑해"
+
+
+def test_word_to_korean_korean_with_punctuation():
+    assert word_to_korean("너를,") == "너를,"
+
+
+def test_line_to_korean_full_korean():
+    result = line_to_korean("사랑해 너를")
+    assert result == "사랑해 너를"
+
+
+def test_line_to_korean_mixed():
+    result = line_to_korean("I love 너를")
+    parts = result.split()
+    assert parts[2] == "너를"
+    assert parts[0] != "I"
+
+
+def test_lyrics_to_korean_korean_song():
+    lyrics = "사랑해\n너를 원해\n"
+    result = lyrics_to_korean(lyrics)
+    assert result[0]['pronunciation'] == "사랑해"
+    assert result[1]['pronunciation'] == "너를 원해"

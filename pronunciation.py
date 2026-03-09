@@ -190,20 +190,32 @@ def phonemes_to_korean(phonemes: list) -> str:
     return ' '.join(parts)
 
 
+_KOREAN_RE = re.compile(r'[\uAC00-\uD7A3\u1100-\u11FF\u3130-\u318F]')
+
+
+def _has_korean(text: str) -> bool:
+    return bool(_KOREAN_RE.search(text))
+
+
 def word_to_korean(word: str) -> str:
     """Convert single English word to Korean pronunciation."""
     if not word:
         return word
+    if _has_korean(word):
+        return word  # 한글 포함 단어 → 그대로
     clean = re.sub(r"[^a-zA-Z']", '', word)
     if not clean:
         return word  # numbers/punctuation only → return as-is
-    phonemes = g2p(clean.lower())
-    result = phonemes_to_korean(phonemes)
-    return result if result else word
+    try:
+        phonemes = g2p(clean.lower())
+        result = phonemes_to_korean(phonemes)
+        return result if result else word
+    except Exception:
+        return word
 
 
 def line_to_korean(line: str) -> str:
-    """Convert one line of English to Korean pronunciation."""
+    """Convert one line of lyrics to Korean pronunciation."""
     if not line.strip():
         return ''
     words = line.split()
