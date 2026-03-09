@@ -27,6 +27,22 @@
             <button type="submit" class="btn-search">검색</button>
         </form>
 
+        <!-- 국가별 차트 -->
+        <section id="chartSection" class="chart-section">
+            <div class="chart-header">
+                <span class="chart-title">지금 인기 차트</span>
+                <div class="chart-tabs" id="chartTabs">
+                    <button class="chart-tab active" data-country="kr">한국</button>
+                    <button class="chart-tab" data-country="us">US</button>
+                    <button class="chart-tab" data-country="gb">UK</button>
+                    <button class="chart-tab" data-country="jp">일본</button>
+                    <button class="chart-tab" data-country="au">AU</button>
+                </div>
+            </div>
+            <div id="chartStatus" class="chart-loading">불러오는 중...</div>
+            <ol id="chartList" class="chart-list hidden"></ol>
+        </section>
+
         <section id="candidatePanel" class="candidate-panel hidden">
             <h3 class="candidate-heading">검색 결과를 선택해주세요</h3>
             <ul id="candidateList" class="candidate-list"></ul>
@@ -44,6 +60,7 @@
     </main>
 
     <script src="/static/js/autocomplete.js"></script>
+    <script src="/static/js/charts.js"></script>
     <script src="/static/js/app.js"></script>
 </body>
 </html>

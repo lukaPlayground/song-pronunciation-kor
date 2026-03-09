@@ -106,3 +106,26 @@ def test_search_with_song_title(client):
     with patch('app.search_candidates', return_value=[]):
         resp = client.post('/api/search', json={'query': 'Yellow'})
     assert resp.status_code == 200
+
+
+# ── charts ──────────────────────────────────────────────────
+
+def test_charts_returns_tracks(client):
+    tracks = [{'rank': '1', 'title': 'APT.', 'artist': 'ROSÉ & Bruno Mars'}]
+    with patch('app.get_chart', return_value=tracks):
+        resp = client.get('/api/charts?country=kr')
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data['country'] == 'kr'
+    assert data['tracks'] == tracks
+
+
+def test_charts_unsupported_country(client):
+    resp = client.get('/api/charts?country=zz')
+    assert resp.status_code == 400
+
+
+def test_charts_default_country_kr(client):
+    with patch('app.get_chart', return_value=[]) as mock_get:
+        client.get('/api/charts')
+    mock_get.assert_called_once_with('kr')

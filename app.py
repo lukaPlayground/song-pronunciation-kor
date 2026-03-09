@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from lyrics import search_lyrics
 from pronunciation import lyrics_to_korean
 from search import search_candidates
+from charts import get_chart, SUPPORTED_COUNTRIES
 
 load_dotenv()
 
@@ -56,6 +57,15 @@ def get_search_candidates():
 
     results = search_candidates(query)
     return jsonify({'results': results})
+
+
+@app.route('/api/charts', methods=['GET'])
+def get_charts():
+    country = request.args.get('country', 'kr').lower()
+    if country not in SUPPORTED_COUNTRIES:
+        return jsonify({'error': f'Unsupported country: {country}'}), 400
+    tracks = get_chart(country)
+    return jsonify({'country': country, 'tracks': tracks})
 
 
 if __name__ == "__main__":

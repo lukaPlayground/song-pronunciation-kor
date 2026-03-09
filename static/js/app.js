@@ -136,6 +136,12 @@ async function searchLyrics(artist, title) {
     resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// 차트에서 곡 선택 → 바로 검색
+initCharts(function (artist, title) {
+    searchInput.value = artist + ' ' + title;
+    searchLyrics(artist, title);
+});
+
 // Autocomplete setup
 setupAutocomplete({
     inputEl: searchInput,
